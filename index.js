@@ -70,8 +70,18 @@ app.post("/api/zip_uploader/", upload_zip.single('user_zip'), function(req, res)
     if (!fs.existsSync(unzip_path)) {
         fs.mkdirSync(unzip_path);
     }
-    fs.createReadStream(user_zip_path).pipe(unzip.Extract({ path: unzip_path }));
-    res.send("upload success");
+    fs.createReadStream(user_zip_path)
+        .pipe(unzip.Extract({ path: unzip_path }))
+        .on('close', function () {
+            fs.readdir(unzip_path, function (err, files) {
+                if (err) {
+                    throw err;
+                }
+
+                console.log(files);
+                res.send("upload success");
+            });
+        });
 });
 
 app.listen(3000, function () {
