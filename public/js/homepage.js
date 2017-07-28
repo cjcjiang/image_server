@@ -6,7 +6,7 @@ $(document).ready(function(){
 
     $('#zip_uploader_form').ajaxForm(function(result) {
         console.log(result);
-        var url_list = "";
+        var url_list = "The http access url should be: <br>";
         result.forEach(function (access_url) {
             url_list = url_list + access_url + "<br>";
         });

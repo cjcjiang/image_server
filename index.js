@@ -59,7 +59,7 @@ app.post("/api/image_uploader/", upload.single('user_image'), function(req, res)
     console.log("User's image is stored in the path: " + user_image_path);
     var access_http_url = "http://localhost:3000/images/" + user_image_name;
     console.log("The http access url should be: " + access_http_url);
-    res.send("The http access url should be: " + access_http_url);
+    res.send("The http access url should be: <br>" + access_http_url);
 });
 
 app.post("/api/zip_uploader/", upload_zip.single('user_zip'), function(req, res) {
