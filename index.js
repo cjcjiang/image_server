@@ -66,20 +66,26 @@ app.post("/api/zip_uploader/", upload_zip.single('user_zip'), function(req, res)
     var user_zip_path = req.file.path;
     var user_zip_name = req.file.filename;
     console.log("User's image is stored in the path: " + user_zip_path);
-    var unzip_path = "./ftp/unzip" +"_" + user_zip_name;
+    var unzip_path = "./ftp/unzip_" + user_zip_name;
     if (!fs.existsSync(unzip_path)) {
         fs.mkdirSync(unzip_path);
     }
     fs.createReadStream(user_zip_path)
         .pipe(unzip.Extract({ path: unzip_path }))
         .on('close', function () {
-            fs.readdir(unzip_path, function (err, files) {
+            fs.readdir(unzip_path, function (err, file_names) {
                 if (err) {
                     throw err;
                 }
 
-                console.log(files);
-                res.send("upload success");
+                console.log(file_names);
+                var access_http_url_array = [];
+                file_names.forEach(function (file_name) {
+                    var unzip_path_for_access = "unzip_" + user_zip_name + "/";
+                    var access_http_url = "http://localhost:3000/" + unzip_path_for_access + file_name;
+                    access_http_url_array.push(access_http_url);
+                });
+                res.send(access_http_url_array);
             });
         });
 });
