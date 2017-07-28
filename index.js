@@ -3,11 +3,23 @@ var express = require('express');
 var path = require('path');
 var multer = require('multer');
 var serveStatic = require('serve-static');
+var fs = require('fs');
+
 var app = express();
+
+var ftp_path = './ftp';
+if (!fs.existsSync(ftp_path)) {
+    fs.mkdirSync(ftp_path);
+}
+
+var image_storage_path = './ftp/images';
+if (!fs.existsSync(image_storage_path)) {
+    fs.mkdirSync(image_storage_path);
+}
 
 var storage = multer.diskStorage({
     destination: function(req, file, callback) {
-        callback(null, "./ftp/Images");
+        callback(null, "./ftp/images");
     },
     filename: function(req, file, callback) {
         callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
@@ -28,7 +40,7 @@ app.post("/api/image_uploader/", upload.single('user_image'), function(req, res)
     var user_image_path = req.file.path;
     var user_image_name = req.file.filename;
     console.log("User's image is stored in the path: " + user_image_path);
-    var access_http_url = "http://localhost:3000/Images/" + user_image_name;
+    var access_http_url = "http://localhost:3000/images/" + user_image_name;
     console.log("The http access url should be: " + access_http_url);
     res.send("The http access url should be: " + access_http_url);
 });
