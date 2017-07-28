@@ -4,6 +4,7 @@ var path = require('path');
 var multer = require('multer');
 var serveStatic = require('serve-static');
 var fs = require('fs');
+var unzip = require('unzip');
 
 var app = express();
 
@@ -17,6 +18,11 @@ if (!fs.existsSync(image_storage_path)) {
     fs.mkdirSync(image_storage_path);
 }
 
+var zip_storage_path = './ftp/zip';
+if (!fs.existsSync(zip_storage_path)) {
+    fs.mkdirSync(zip_storage_path);
+}
+
 var storage = multer.diskStorage({
     destination: function(req, file, callback) {
         callback(null, "./ftp/images");
@@ -26,6 +32,17 @@ var storage = multer.diskStorage({
     }
 });
 var upload = multer({ storage: storage });
+
+var storage_zip = multer.diskStorage({
+    destination: function(req, file, callback) {
+        callback(null, "./ftp/zip");
+    },
+    filename: function(req, file, callback) {
+        callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
+    }
+});
+
+var upload_zip = multer({ storage: storage_zip });
 
 app.set('views', path.join(__dirname,'app','views'));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -43,6 +60,18 @@ app.post("/api/image_uploader/", upload.single('user_image'), function(req, res)
     var access_http_url = "http://localhost:3000/images/" + user_image_name;
     console.log("The http access url should be: " + access_http_url);
     res.send("The http access url should be: " + access_http_url);
+});
+
+app.post("/api/zip_uploader/", upload_zip.single('user_zip'), function(req, res) {
+    var user_zip_path = req.file.path;
+    var user_zip_name = req.file.filename;
+    console.log("User's image is stored in the path: " + user_zip_path);
+    var unzip_path = "./ftp/unzip" +"_" + user_zip_name;
+    if (!fs.existsSync(unzip_path)) {
+        fs.mkdirSync(unzip_path);
+    }
+    fs.createReadStream(user_zip_path).pipe(unzip.Extract({ path: unzip_path }));
+    res.send("upload success");
 });
 
 app.listen(3000, function () {
