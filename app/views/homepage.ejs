@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.1/jquery.form.min.js" integrity="sha384-tIwI8+qJdZBtYYCKwRkjxBGQVZS3gGozr3CtI+5JF/oL1JmPEHzCEnIKbDbLTCer" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/js/homepage.js"></script>
+</head>
+<body>
+
+<h1>Image Uploading Page</h1>
+
+<div id="display_area">
+<form id="image_uploader_form" enctype="multipart/form-data" action="api/image_uploader/" method="post">
+    <input type="file" name="user_image"/>
+    <input type="submit" name="submit" id="submit_button" value="Upload" />
+</form>
+</div>
+
+</body>
+</html>
